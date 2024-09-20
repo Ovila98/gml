@@ -2,17 +2,17 @@
 
 [![GoDoc](https://godoc.org/github.com/ovila98/gml?status.svg)](https://godoc.org/github.com/ovila98/gml) [![Go Report Card](https://goreportcard.com/badge/github.com/ovila98/gml)](https://goreportcard.com/report/github.com/ovila98/gml)
 
-`gml` (Go Markup Language) is a Go package that simplifies working with XML data by providing an intuitive and flexible abstraction over XML structures. The package revolves around the `XmlNode` struct, which models an XML element with support for attributes, child elements, and text content. You can easily marshal/unmarshal XML data, navigate or manipulate XML node trees, and build XML queries with ease.
+`gml` (Go Markup Language) is a Go package that simplifies working with XML data by providing an intuitive and flexible abstraction over XML structures. The package revolves around the `Node` struct, which models an XML element with support for attributes, child elements, and text content. You can easily marshal/unmarshal XML data, navigate or manipulate XML node trees, and build XML queries with ease.
 
 It's a subtle play on words—'gml' sounds like 'XML' but refers to a Go-based approach for working with markup!
 
 ## Features
 
-- **Unmarshaling**: Convert XML into an easy-to-use `XmlNode` structure with attributes and children.
-- **Marshaling**: Serialize `XmlNode` structures back into XML format.
+- **Unmarshaling**: Convert XML into an easy-to-use `Node` structure with attributes and children.
+- **Marshaling**: Serialize `Node` structures back into XML format.
 - **Node Manipulation**: Add, remove, or search child nodes and attributes.
 - **Path Creation**: Easily ensure or create paths of nested XML elements.
-- **Custom XML Building**: Use `XmlNode` as a base to create complex XML queries programmatically.
+- **Custom XML Building**: Use `Node` as a base to create complex XML queries programmatically.
 - **Method chaining**: Build your XML more easily by using method chaining.
 
 ## Installation
@@ -35,7 +35,7 @@ Here is a basic usage example showing how to create, manipulate, and marshal/unm
 
 ### Unmarshaling XML
 
-The `gml` package allows you to easily convert an XML string into a `XmlNode` tree structure.
+The `gml` package allows you to easily convert an XML string into a `Node` tree structure.
 
 ```go
 package main
@@ -91,7 +91,7 @@ func main() {
 
 ### Marshaling XML
 
-You can construct `XmlNode` elements in your Go code and then serialize them back to XML.
+You can construct `Node` elements in your Go code and then serialize them back to XML.
 
 ```go
 package main
@@ -153,13 +153,13 @@ func main() {
 
 ### Manipulating XML Nodes
 
-The `XmlNode` struct allows you to add, remove, and find child nodes easily.
+The `Node` struct allows you to add, remove, and find child nodes easily.
 
 #### Adding a Child Node
 
 ```go
-root := &gml.XmlNode{Tag: "root"}
-child := &gml.XmlNode{Tag: "child", InnerText: "This is a child node"}
+root := &gml.Node{Tag: "root"}
+child := &gml.Node{Tag: "child", InnerText: "This is a child node"}
 root.AppendChild(child)
 ```
 
@@ -185,7 +185,7 @@ Attributes are stored in a map, and `gml` provides methods to easily manage them
 #### Setting an Attribute
 
 ```go
-node := &gml.XmlNode{Tag: "node"}
+node := &gml.Node{Tag: "node"}
 node.SetAttribute("key", "value")
 ```
 
@@ -217,7 +217,7 @@ node.RemoveAttribute("key")
 #### Creating a Path
 
 ```go
-root := &gml.XmlNode{Tag: "root"}
+root := &gml.Node{Tag: "root"}
 deepNode := root.CreatePath("level1", "level2", "level3")
 deepNode.InnerText = "Deep Node Content"
 ```
@@ -225,7 +225,7 @@ deepNode.InnerText = "Deep Node Content"
 #### Ensuring a Path Exists
 
 ```go
-root := &gml.XmlNode{Tag: "root"}
+root := &gml.Node{Tag: "root"}
 ensuredNode := root.EnsurePath("level1", "level2", "level3")
 ensuredNode.InnerText = "This node was created if it didn't exist"
 ```
@@ -245,17 +245,17 @@ import (
 
 func main() {
     // Build the XML structure using method chaining
-    school := (&gml.XmlNode{Tag: "school"}).
+    school := (&gml.Node{Tag: "school"}).
         SetAttribute("name", "Green Valley High School").
         SetAttribute("location", "North Side").
-        AppendChild(&gml.XmlNode{Tag: "classroom"}).
+        AppendChild(&gml.Node{Tag: "classroom"}).
         SetAttribute("name", "Science").
-        AppendChild(&gml.XmlNode{Tag: "student"}).
-        AppendChild(&gml.XmlNode{Tag: "name", InnerText: "John Doe"}).Parent.
-        AppendChild(&gml.XmlNode{Tag: "age", InnerText: "16"}).Parent.Parent.
-        AppendChild(&gml.XmlNode{Tag: "student"}).
-        AppendChild(&gml.XmlNode{Tag: "name", InnerText: "Jane Smith"}).Parent.
-        AppendChild(&gml.XmlNode{Tag: "age", InnerText: "15"})
+        AppendChild(&gml.Node{Tag: "student"}).
+        AppendChild(&gml.Node{Tag: "name", InnerText: "John Doe"}).Parent.
+        AppendChild(&gml.Node{Tag: "age", InnerText: "16"}).Parent.Parent.
+        AppendChild(&gml.Node{Tag: "student"}).
+        AppendChild(&gml.Node{Tag: "name", InnerText: "Jane Smith"}).Parent.
+        AppendChild(&gml.Node{Tag: "age", InnerText: "15"})
 
     // Marshal the XML structure
     output, err := xml.MarshalIndent(school, "", "  ")
