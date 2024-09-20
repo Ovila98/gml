@@ -6,6 +6,8 @@ package gml
 import (
 	"encoding/xml"
 	"strings"
+
+	"github.com/ovila98/ers"
 )
 
 // Node represents a node in an XML document.
@@ -32,14 +34,14 @@ func (n *Node) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 	for {
 		token, err := d.Token()
 		if err != nil {
-			return err
+			return ers.Trace(err)
 		}
 		switch elem := token.(type) {
 		case xml.StartElement:
 			child := &Node{Parent: n}
 			err := child.UnmarshalXML(d, elem)
 			if err != nil {
-				return err
+				return ers.Trace(err)
 			}
 			n.Children = append(n.Children, child)
 		case xml.CharData:
@@ -61,29 +63,29 @@ func (n *Node) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
 	if len(n.Children) == 0 && n.InnerText == "" {
 		err := e.EncodeToken(start)
 		if err != nil {
-			return err
+			return ers.Trace(err)
 		}
 		return e.EncodeToken(xml.EndElement{Name: start.Name})
 	}
 	err := e.EncodeToken(start)
 	if err != nil {
-		return err
+		return ers.Trace(err)
 	}
 	if n.InnerText != "" {
 		err = e.EncodeToken(xml.CharData([]byte(n.InnerText)))
 		if err != nil {
-			return err
+			return ers.Trace(err)
 		}
 	}
 	for _, child := range n.Children {
 		err = e.Encode(child)
 		if err != nil {
-			return err
+			return ers.Trace(err)
 		}
 	}
 	err = e.EncodeToken(xml.EndElement{Name: start.Name})
 	if err != nil {
-		return err
+		return ers.Trace(err)
 	}
 	return e.Flush()
 }
@@ -109,6 +111,20 @@ func (n *Node) AppendChild(node *Node) *Node {
 	node.Parent = n
 	n.Children = append(n.Children, node)
 	return node
+}
+
+// ChainAppendChildren appends multiple child nodes to the Node. Returns the parent node.
+func (n *Node) ChainAppendChildren(nodes ...*Node) *Node {
+	for _, node := range nodes {
+		n.AppendChild(node)
+	}
+	return n
+}
+
+// ChainAppendChild appends a child node to the Node and returns the parent node.
+func (n *Node) ChainAppendChild(node *Node) *Node {
+	n.AppendChild(node)
+	return n
 }
 
 // SetAttribute sets the given attribute to the XML node.

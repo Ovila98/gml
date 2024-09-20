@@ -48,7 +48,7 @@ import (
 
 func main() {
     xmlData := `
-    <library name="City Library" location="Downtown" version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <library name="City Library" location="Downtown" rating="4.3">
         <section name="Fiction">
             <book>
                 <title>The Great Gatsby</title>
